@@ -39,11 +39,12 @@ namespace WindowsFormsApp2
             this.Strip_Exit = new System.Windows.Forms.ToolStripMenuItem();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.Kolski_Check_Btn = new System.Windows.Forms.Button();
-            this.Deformation_Draw = new System.Windows.Forms.Button();
+            this.Strain_Draw_Btn = new System.Windows.Forms.Button();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.Deform_Speed_Draw = new System.Windows.Forms.Button();
-            this.Tension_Draw_Btn = new System.Windows.Forms.Button();
+            this.Strain_Rate_Draw_Btn = new System.Windows.Forms.Button();
+            this.Stress_Draw_Btn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.Kolski_Check_Value = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -140,15 +141,15 @@ namespace WindowsFormsApp2
             this.Kolski_Check_Btn.UseVisualStyleBackColor = true;
             this.Kolski_Check_Btn.Click += new System.EventHandler(this.Kolski_Check_Click);
             // 
-            // Deformation_Draw
+            // Strain_Draw_Btn
             // 
-            this.Deformation_Draw.Location = new System.Drawing.Point(723, 184);
-            this.Deformation_Draw.Name = "Deformation_Draw";
-            this.Deformation_Draw.Size = new System.Drawing.Size(100, 24);
-            this.Deformation_Draw.TabIndex = 16;
-            this.Deformation_Draw.Text = "Draw Deformation";
-            this.Deformation_Draw.UseVisualStyleBackColor = true;
-            this.Deformation_Draw.Click += new System.EventHandler(this.Deformation_Draw_Click);
+            this.Strain_Draw_Btn.Location = new System.Drawing.Point(723, 184);
+            this.Strain_Draw_Btn.Name = "Strain_Draw_Btn";
+            this.Strain_Draw_Btn.Size = new System.Drawing.Size(100, 24);
+            this.Strain_Draw_Btn.TabIndex = 16;
+            this.Strain_Draw_Btn.Text = "Draw Strain";
+            this.Strain_Draw_Btn.UseVisualStyleBackColor = true;
+            this.Strain_Draw_Btn.Click += new System.EventHandler(this.Strain_Draw_Click);
             // 
             // pictureBox2
             // 
@@ -158,25 +159,25 @@ namespace WindowsFormsApp2
             this.pictureBox2.TabIndex = 17;
             this.pictureBox2.TabStop = false;
             // 
-            // Deform_Speed_Draw
+            // Strain_Rate_Draw_Btn
             // 
-            this.Deform_Speed_Draw.Location = new System.Drawing.Point(694, 223);
-            this.Deform_Speed_Draw.Name = "Deform_Speed_Draw";
-            this.Deform_Speed_Draw.Size = new System.Drawing.Size(129, 23);
-            this.Deform_Speed_Draw.TabIndex = 18;
-            this.Deform_Speed_Draw.Text = "Draw Deform Speed";
-            this.Deform_Speed_Draw.UseVisualStyleBackColor = true;
-            this.Deform_Speed_Draw.Click += new System.EventHandler(this.Deform_Speed_Draw_Click);
+            this.Strain_Rate_Draw_Btn.Location = new System.Drawing.Point(723, 223);
+            this.Strain_Rate_Draw_Btn.Name = "Strain_Rate_Draw_Btn";
+            this.Strain_Rate_Draw_Btn.Size = new System.Drawing.Size(100, 23);
+            this.Strain_Rate_Draw_Btn.TabIndex = 18;
+            this.Strain_Rate_Draw_Btn.Text = "Draw Strain Rate";
+            this.Strain_Rate_Draw_Btn.UseVisualStyleBackColor = true;
+            this.Strain_Rate_Draw_Btn.Click += new System.EventHandler(this.Strain_Rate_Draw_Click);
             // 
-            // Tension_Draw_Btn
+            // Stress_Draw_Btn
             // 
-            this.Tension_Draw_Btn.Location = new System.Drawing.Point(723, 264);
-            this.Tension_Draw_Btn.Name = "Tension_Draw_Btn";
-            this.Tension_Draw_Btn.Size = new System.Drawing.Size(100, 23);
-            this.Tension_Draw_Btn.TabIndex = 19;
-            this.Tension_Draw_Btn.Text = "Draw Tension";
-            this.Tension_Draw_Btn.UseVisualStyleBackColor = true;
-            this.Tension_Draw_Btn.Click += new System.EventHandler(this.Tension_Draw_Click);
+            this.Stress_Draw_Btn.Location = new System.Drawing.Point(723, 264);
+            this.Stress_Draw_Btn.Name = "Stress_Draw_Btn";
+            this.Stress_Draw_Btn.Size = new System.Drawing.Size(100, 23);
+            this.Stress_Draw_Btn.TabIndex = 19;
+            this.Stress_Draw_Btn.Text = "Draw Stress";
+            this.Stress_Draw_Btn.UseVisualStyleBackColor = true;
+            this.Stress_Draw_Btn.Click += new System.EventHandler(this.Stress_Draw_Click);
             // 
             // label1
             // 
@@ -187,16 +188,25 @@ namespace WindowsFormsApp2
             this.label1.TabIndex = 20;
             this.label1.Text = "Время, мкс";
             // 
+            // Kolski_Check_Value
+            // 
+            this.Kolski_Check_Value.AccessibleRole = System.Windows.Forms.AccessibleRole.StatusBar;
+            this.Kolski_Check_Value.Location = new System.Drawing.Point(668, 145);
+            this.Kolski_Check_Value.Name = "Kolski_Check_Value";
+            this.Kolski_Check_Value.Size = new System.Drawing.Size(100, 20);
+            this.Kolski_Check_Value.TabIndex = 21;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1295, 504);
+            this.Controls.Add(this.Kolski_Check_Value);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.Tension_Draw_Btn);
-            this.Controls.Add(this.Deform_Speed_Draw);
+            this.Controls.Add(this.Stress_Draw_Btn);
+            this.Controls.Add(this.Strain_Rate_Draw_Btn);
             this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.Deformation_Draw);
+            this.Controls.Add(this.Strain_Draw_Btn);
             this.Controls.Add(this.Kolski_Check_Btn);
             this.Controls.Add(this.trackBar2);
             this.Controls.Add(this.label2);
@@ -230,11 +240,12 @@ namespace WindowsFormsApp2
         private System.Windows.Forms.ToolStripMenuItem Strip_Exit;
         private System.Windows.Forms.TrackBar trackBar2;
         private System.Windows.Forms.Button Kolski_Check_Btn;
-        private System.Windows.Forms.Button Deformation_Draw;
+        private System.Windows.Forms.Button Strain_Draw_Btn;
         private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.Button Deform_Speed_Draw;
-        private System.Windows.Forms.Button Tension_Draw_Btn;
+        private System.Windows.Forms.Button Strain_Rate_Draw_Btn;
+        private System.Windows.Forms.Button Stress_Draw_Btn;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox Kolski_Check_Value;
     }
 }
 

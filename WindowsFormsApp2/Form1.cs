@@ -36,8 +36,8 @@ namespace WindowsFormsApp2
         List<double> ReflectedImp = new List<double>();//двигаем 2
         List<double> PassedImp = new List<double>();//двигаем 1
 
-        List<PointF> Deformation = new List<PointF>();
-        List<PointF> Tension = new List<PointF>();
+        List<PointF> Strain = new List<PointF>();
+        List<PointF> Stress = new List<PointF>();
 
 
         Pen pen1 = new Pen(Color.Blue, 2), pen2 = new Pen(Color.Red, 2), pen3 = new Pen(Color.Green, 2), pen_ax = new Pen(Color.Gray, 2);
@@ -159,15 +159,28 @@ namespace WindowsFormsApp2
             LoadImpulse();
             Axis();
             Draw();
+            Kolski_Check();
         }
 
 
         void Axis() {
 
-            user_Graphics.FillRectangle(Brushes.White, 0, 0, pictureBox1.Width, pictureBox1.Height);
+            user_Graphics.Clear(Color.White);
 
             user_Graphics.DrawLine(pen_ax, (float)x0, (float)y0, pictureBox1.Width, (float)y0);
             user_Graphics.DrawLine(pen_ax, (float)x0, 0, (float)x0, pictureBox1.Height);
+
+            user_Graphics.DrawLine(pen_ax, (float)x0, 5, pictureBox1.Width, 5);
+            user_Graphics.DrawLine(pen_ax, (float)x0, (float)y0 - pictureBox1.Height / 4, pictureBox1.Width, (float)y0 - pictureBox1.Height/4);
+            user_Graphics.DrawLine(pen_ax, (float)x0, (float)y0 + pictureBox1.Height / 4, pictureBox1.Width, (float)y0 + pictureBox1.Height / 4);
+            user_Graphics.DrawLine(pen_ax, (float)x0, pictureBox1.Height-5, pictureBox1.Width, pictureBox1.Height-5);
+
+            user_Graphics.DrawLine(pen_ax, pictureBox1.Width * (float)0.25, (float)y0 - 3, pictureBox1.Width * (float)0.25, (float)y0 + 3);
+            user_Graphics.DrawLine(pen_ax, pictureBox1.Width * (float)0.5, (float)y0 - 3, pictureBox1.Width * (float)0.5, (float)y0 + 3);
+            user_Graphics.DrawLine(pen_ax, pictureBox1.Width * (float)0.75, (float)y0 - 3, pictureBox1.Width * (float)0.75, (float)y0 + 3);
+            user_Graphics.DrawLine(pen_ax, pictureBox1.Width - 5, (float)y0 - 3, pictureBox1.Width - 5, (float)y0 + 3);
+
+
 
             double d1 = pictureBox1.Height / 2 - LoadingImp.Max() * Coef_Imp,
                     d2 = (pictureBox1.Height - LoadingImp.Max() * Coef_Imp) * 0.5;
@@ -290,9 +303,7 @@ namespace WindowsFormsApp2
             pictureBox1.Image = canvas;
         }
 
-
-        private void Kolski_Check_Click(object sender, EventArgs e)
-        {
+        private void Kolski_Check() {
             float[,] transformedPoints1 = CreateTransformedPoints1();
             float[,] transformedPoints2 = CreateTransformedPoints2();
 
@@ -300,6 +311,8 @@ namespace WindowsFormsApp2
             List<PointF> temp2 = new List<PointF>();
 
             List<PointF> op = new List<PointF>();
+
+            double Check_Value = 0;
 
             float Deform_max = 0;
             float Time_max = 0;
@@ -321,20 +334,79 @@ namespace WindowsFormsApp2
                     temp2.Add(GetF(transformedPoints2[0, i], transformedPoints2[1, i]));
             }
 
-            new_Imp_coef = (float)((pictureBox2.Height - 30) / Deform_max)/500000;
+            new_Imp_coef = (float)((pictureBox2.Height - 30) / Deform_max) / 500000;
             new_Time_coef = (float)((pictureBox2.Width - 10) / Time_max);
 
-            Tension = new List<PointF>(temp1);
-            Deformation = new List<PointF>(temp2);
+            Stress = new List<PointF>(temp1);
+            Strain = new List<PointF>(temp2);
 
             op.Add(GetPoint(temp2[0].X, -temp2[0].Y + temp1[0].Y));
 
-            for (j = 1; j < Math.Min(temp1.Count(), temp2.Count()); j++) {
+            for (j = 1; j < Math.Min(temp1.Count(), temp2.Count()); j++)
+            {
+                Check_Value = Math.Pow(Math.Abs(op.Last().Y - LoadingImp[j]), 2);
 
                 op.Add(GetPoint(temp2[j].X, -temp2[j].Y + temp1[j].Y));
 
                 user_Graphics.DrawLine(pen3, op[j - 1], op.Last());
             }
+            Check_Value = Check_Value / j;
+            Check_Value = Math.Sqrt(Check_Value);
+            Kolski_Check_Value.Text = Check_Value.ToString();
+
+            pictureBox1.Image = canvas;
+        }
+        private void Kolski_Check_Click(object sender, EventArgs e)
+        {
+            float[,] transformedPoints1 = CreateTransformedPoints1();
+            float[,] transformedPoints2 = CreateTransformedPoints2();
+
+            List<PointF> temp1 = new List<PointF>();
+            List<PointF> temp2 = new List<PointF>();
+
+            double Check_Value = 0;
+
+            List<PointF> op = new List<PointF>();
+
+            float Deform_max = 0;
+            float Time_max = 0;
+
+            int i, j = 0;
+
+            for (i = 0; i < Time.Count(); i++)
+            {
+                if (transformedPoints1[0, i] >= x0)
+                {
+                    temp1.Add(GetF(transformedPoints1[0, i], transformedPoints1[1, i]));
+                    if (transformedPoints1[0, i] > Time_max)
+                        Time_max = transformedPoints1[0, i];
+                    if (transformedPoints1[1, i] > Deform_max)
+                        Deform_max = transformedPoints1[1, i];
+                }
+
+                if (transformedPoints2[0, i] >= x0)
+                    temp2.Add(GetF(transformedPoints2[0, i], transformedPoints2[1, i]));
+            }
+
+            new_Imp_coef = (float)((pictureBox2.Height - 30) / Deform_max)/500000;
+            new_Time_coef = (float)((pictureBox2.Width - 10) / Time_max);
+
+            Stress = new List<PointF>(temp1);
+            Strain = new List<PointF>(temp2);
+
+            op.Add(GetPoint(temp2[0].X, -temp2[0].Y + temp1[0].Y));
+
+            for (j = 1; j < Math.Min(temp1.Count(), temp2.Count()); j++) {
+                Check_Value = Math.Pow(Math.Abs(op.Last().Y - LoadingImp[j]), 2);
+
+                op.Add(GetPoint(temp2[j].X, -temp2[j].Y + temp1[j].Y));
+
+                user_Graphics.DrawLine(pen3, op[j - 1], op.Last());
+            }
+
+            Check_Value = Check_Value / j;
+            Check_Value = Math.Sqrt(Check_Value);
+            Kolski_Check_Value.Text = Check_Value.ToString();
 
             pictureBox1.Image = canvas;
         }
@@ -343,14 +415,16 @@ namespace WindowsFormsApp2
         float Integral(int index, List<PointF> op)
         {
             float temp = 0;
-            for (int k = 1; k < 10000; k++) {
-                temp += (float)(op[(int)index * (k - 1) / 10000].Y + op[(int)index * k / 10000].Y) * op[index].X / 10000;
+            int k;
+
+            for (k = 1; k < index; k++) {
+                temp += (float)((op[k-1].Y + op[k].Y) * Time[k] / 2);
             }
 
             return temp;
         }
 
-        private void Deformation_Draw_Click(object sender, EventArgs e)
+        private void Strain_Draw_Click(object sender, EventArgs e)
         {
             List<PointF> op = new List<PointF>();
 
@@ -362,14 +436,15 @@ namespace WindowsFormsApp2
             user_gr1.DrawString("Strain", StrFont, axBrush, pictureBox2.Width / 2 - 12, 6, drawFormat);
             user_gr1.DrawString("0", axFont, axBrush, 0, (float)y0_, drawFormat);
 
-            double C = 5050, L0 = 10.22;
+            double C = 50, L0 = 10.22; //c = 5050
 
             double coef = -2 * C / L0;
 
-            op.Add(GetPoint_1( Deformation[0].X, (float)coef * Integral(0, Deformation)));
+            op.Add(GetPoint_1(Strain[0].X, (float)coef * Integral(0, Strain)));
 
-            for (int i = 1; i < Deformation.Count(); i++) {
-                op.Add(GetPoint_1(Deformation[i].X, (float)coef * Integral(i, Deformation)));
+            for (int i = 1; i < Strain.Count(); i++)
+            {
+                op.Add(GetPoint_1(Strain[i].X, (float)coef * Integral(i, Strain)));
 
                 user_gr1.DrawLine(pen1, op[i - 1], op.Last());
             }
@@ -377,8 +452,7 @@ namespace WindowsFormsApp2
             pictureBox2.Image = canvas1;
         }
 
-
-        private void Deform_Speed_Draw_Click(object sender, EventArgs e)
+        private void Strain_Rate_Draw_Click(object sender, EventArgs e)
         {
             List<PointF> op = new List<PointF>();
 
@@ -387,29 +461,28 @@ namespace WindowsFormsApp2
             user_gr1.DrawLine(pen_ax, (float)x0_, (float)y0_, pictureBox2.Width, (float)y0_);
             user_gr1.DrawLine(pen_ax, (float)x0_, 0, (float)x0_, pictureBox2.Height);
 
-            user_gr1.DrawString("Speed of strain", StrFont, axBrush, pictureBox2.Width / 2 - 12, 6, drawFormat);
+            user_gr1.DrawString("Strain Rate", StrFont, axBrush, pictureBox2.Width / 2 - 12, 6, drawFormat);
             user_gr1.DrawString("0", axFont, axBrush, 0, (float)y0_, drawFormat);
 
             double C = 5050, L0 = 10.22;
 
             double coef = -2 * C / L0;
 
-            op.Add(GetPoint_1(Deformation[0].X, (float)coef * Deformation[0].Y));
+            op.Add(GetPoint_1(Strain[0].X, (float)coef * Strain[0].Y));
 
-            for (int i = 1; i < Deformation.Count(); i++)
+            for (int i = 1; i < Strain.Count(); i++)
             {
-                op.Add(GetPoint_1(Deformation[i].X, (float)coef * Deformation[i].Y));
+                op.Add(GetPoint_1(Strain[i].X, (float)coef * Strain[i].Y));
 
                 user_gr1.DrawLine(pen1, op[i - 1], op.Last());
-            }            
+            }
 
 
             pictureBox2.Image = canvas1;
 
         }
 
-
-        private void Tension_Draw_Click(object sender, EventArgs e)
+        private void Stress_Draw_Click(object sender, EventArgs e)
         {
             List<PointF> op = new List<PointF>();
 
@@ -427,11 +500,11 @@ namespace WindowsFormsApp2
 
             double coef = E * A / A0;
 
-            op.Add(GetPoint_1(Tension[0].X, (float)coef * Tension[0].Y));
+            op.Add(GetPoint_1(Stress[0].X, (float)coef * Stress[0].Y));
 
-            for (int i = 1; i < Tension.Count(); i++)
+            for (int i = 1; i < Stress.Count(); i++)
             {
-                op.Add(GetPoint_1(Tension[i].X, (float)coef * Tension[i].Y));
+                op.Add(GetPoint_1(Stress[i].X, (float)coef * Stress[i].Y));
 
                 user_gr1.DrawLine(pen2, op[i - 1], op.Last());
             }

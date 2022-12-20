@@ -38,13 +38,12 @@ namespace WindowsFormsApp2
             this.Strip_Save = new System.Windows.Forms.ToolStripMenuItem();
             this.Strip_Exit = new System.Windows.Forms.ToolStripMenuItem();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
-            this.Kolski_Check_Btn = new System.Windows.Forms.Button();
             this.Strain_Draw_Btn = new System.Windows.Forms.Button();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.Strain_Rate_Draw_Btn = new System.Windows.Forms.Button();
             this.Stress_Draw_Btn = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.Kolski_Check_Value = new System.Windows.Forms.TextBox();
+            this.Middle_Sq_Value = new System.Windows.Forms.TextBox();
+            this.Stress_Strain_Btn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -131,19 +130,9 @@ namespace WindowsFormsApp2
             this.trackBar2.Value = 100;
             this.trackBar2.Scroll += new System.EventHandler(this.Change_dx1);
             // 
-            // Kolski_Check_Btn
-            // 
-            this.Kolski_Check_Btn.Location = new System.Drawing.Point(668, 115);
-            this.Kolski_Check_Btn.Name = "Kolski_Check_Btn";
-            this.Kolski_Check_Btn.Size = new System.Drawing.Size(100, 23);
-            this.Kolski_Check_Btn.TabIndex = 15;
-            this.Kolski_Check_Btn.Text = "Kolski_Check";
-            this.Kolski_Check_Btn.UseVisualStyleBackColor = true;
-            this.Kolski_Check_Btn.Click += new System.EventHandler(this.Kolski_Check_Click);
-            // 
             // Strain_Draw_Btn
             // 
-            this.Strain_Draw_Btn.Location = new System.Drawing.Point(723, 184);
+            this.Strain_Draw_Btn.Location = new System.Drawing.Point(723, 193);
             this.Strain_Draw_Btn.Name = "Strain_Draw_Btn";
             this.Strain_Draw_Btn.Size = new System.Drawing.Size(100, 24);
             this.Strain_Draw_Btn.TabIndex = 16;
@@ -153,9 +142,9 @@ namespace WindowsFormsApp2
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(829, 115);
+            this.pictureBox2.Location = new System.Drawing.Point(829, 114);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(454, 354);
+            this.pictureBox2.Size = new System.Drawing.Size(454, 371);
             this.pictureBox2.TabIndex = 17;
             this.pictureBox2.TabStop = false;
             // 
@@ -171,7 +160,7 @@ namespace WindowsFormsApp2
             // 
             // Stress_Draw_Btn
             // 
-            this.Stress_Draw_Btn.Location = new System.Drawing.Point(723, 264);
+            this.Stress_Draw_Btn.Location = new System.Drawing.Point(723, 252);
             this.Stress_Draw_Btn.Name = "Stress_Draw_Btn";
             this.Stress_Draw_Btn.Size = new System.Drawing.Size(100, 23);
             this.Stress_Draw_Btn.TabIndex = 19;
@@ -179,35 +168,35 @@ namespace WindowsFormsApp2
             this.Stress_Draw_Btn.UseVisualStyleBackColor = true;
             this.Stress_Draw_Btn.Click += new System.EventHandler(this.Stress_Draw_Click);
             // 
-            // label1
+            // Middle_Sq_Value
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1036, 472);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(66, 13);
-            this.label1.TabIndex = 20;
-            this.label1.Text = "Время, мкс";
+            this.Middle_Sq_Value.AccessibleRole = System.Windows.Forms.AccessibleRole.StatusBar;
+            this.Middle_Sq_Value.Location = new System.Drawing.Point(667, 115);
+            this.Middle_Sq_Value.Name = "Middle_Sq_Value";
+            this.Middle_Sq_Value.Size = new System.Drawing.Size(100, 20);
+            this.Middle_Sq_Value.TabIndex = 21;
             // 
-            // Kolski_Check_Value
+            // Stress_Strain_Btn
             // 
-            this.Kolski_Check_Value.AccessibleRole = System.Windows.Forms.AccessibleRole.StatusBar;
-            this.Kolski_Check_Value.Location = new System.Drawing.Point(668, 145);
-            this.Kolski_Check_Value.Name = "Kolski_Check_Value";
-            this.Kolski_Check_Value.Size = new System.Drawing.Size(100, 20);
-            this.Kolski_Check_Value.TabIndex = 21;
+            this.Stress_Strain_Btn.Location = new System.Drawing.Point(723, 281);
+            this.Stress_Strain_Btn.Name = "Stress_Strain_Btn";
+            this.Stress_Strain_Btn.Size = new System.Drawing.Size(100, 23);
+            this.Stress_Strain_Btn.TabIndex = 22;
+            this.Stress_Strain_Btn.Text = "Stress ~ Strain";
+            this.Stress_Strain_Btn.UseVisualStyleBackColor = true;
+            this.Stress_Strain_Btn.Click += new System.EventHandler(this.Stress_Strain_Btn_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1295, 504);
-            this.Controls.Add(this.Kolski_Check_Value);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.Stress_Strain_Btn);
+            this.Controls.Add(this.Middle_Sq_Value);
             this.Controls.Add(this.Stress_Draw_Btn);
             this.Controls.Add(this.Strain_Rate_Draw_Btn);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.Strain_Draw_Btn);
-            this.Controls.Add(this.Kolski_Check_Btn);
             this.Controls.Add(this.trackBar2);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
@@ -239,13 +228,12 @@ namespace WindowsFormsApp2
         private System.Windows.Forms.ToolStripMenuItem Strip_Save;
         private System.Windows.Forms.ToolStripMenuItem Strip_Exit;
         private System.Windows.Forms.TrackBar trackBar2;
-        private System.Windows.Forms.Button Kolski_Check_Btn;
         private System.Windows.Forms.Button Strain_Draw_Btn;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Button Strain_Rate_Draw_Btn;
         private System.Windows.Forms.Button Stress_Draw_Btn;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox Kolski_Check_Value;
+        private System.Windows.Forms.TextBox Middle_Sq_Value;
+        private System.Windows.Forms.Button Stress_Strain_Btn;
     }
 }
 

@@ -36,6 +36,7 @@ namespace WindowsFormsApp2
         List<double> ReflectedImp = new List<double>();//двигаем 2
         List<double> PassedImp = new List<double>();//двигаем 1
 
+        List<PointF> Strain_Rate = new List<PointF>();
         List<PointF> Strain = new List<PointF>();
         List<PointF> Stress = new List<PointF>();
 
@@ -55,11 +56,11 @@ namespace WindowsFormsApp2
 
         double x0, y0, x0_, y0_;
 
-        double Coef_Imp;
-        double Time_Coef;
+        double Imp_Coef, Time_Coef;
+        double Time_Div, Imp_Div;
         int Points;
 
-        float new_Time_coef, new_Imp_coef;
+        float new_Time_coef, new_Imp_coef, Imp_Coef_1, Imp_Coef_2;
 
         Bitmap canvas, canvas1;
 
@@ -92,16 +93,7 @@ namespace WindowsFormsApp2
                 { dx_, 0, 1},
             };
 
-            float[,] Rx = new float[,]
-            {
-                { 1, 0, 0},
-                { 0, 1, 0},
-                { 0, 0, 1},
-            };
-
-            float[,] T = MatrixMultiplication(Rx, P);
-
-            return MatrixMultiplication(T, temp);
+            return MatrixMultiplication(P, temp);
         }
 
 
@@ -127,16 +119,7 @@ namespace WindowsFormsApp2
                 { dx_, 0, 1},
             };
 
-            float[,] Rx = new float[,]
-            {
-                { 1, 0, 0},
-                { 0, 1, 0},
-                { 0, 0, 1},
-            };
-
-            float[,] T = MatrixMultiplication(Rx, P);
-
-            return MatrixMultiplication(T, temp);
+            return MatrixMultiplication(P, temp);
         }
 
         public Form1()
@@ -159,9 +142,7 @@ namespace WindowsFormsApp2
             LoadImpulse();
             Axis();
             Draw();
-            Kolski_Check();
         }
-
 
         void Axis() {
 
@@ -180,32 +161,113 @@ namespace WindowsFormsApp2
             user_Graphics.DrawLine(pen_ax, pictureBox1.Width * (float)0.75, (float)y0 - 3, pictureBox1.Width * (float)0.75, (float)y0 + 3);
             user_Graphics.DrawLine(pen_ax, pictureBox1.Width - 5, (float)y0 - 3, pictureBox1.Width - 5, (float)y0 + 3);
 
+            double Znach_y = Math.Round(Imp_Div * 1000) / 1000;
 
-
-            double d1 = pictureBox1.Height / 2 - LoadingImp.Max() * Coef_Imp,
-                    d2 = (pictureBox1.Height - LoadingImp.Max() * Coef_Imp) * 0.5;
-            double d3 = pictureBox1.Height / 2 + LoadingImp.Max() * Coef_Imp,
-                d4 = (pictureBox1.Height + LoadingImp.Max() * Coef_Imp) * 0.5;
-
-            double Znach_y = Math.Round(LoadingImp.Max() * 100) / 100;
-
-            user_Graphics.DrawString(Znach_y.ToString(), axFont, axBrush, 0, (float)d1, drawFormat);
-
-            user_Graphics.DrawString((Znach_y / 2).ToString(), axFont, axBrush, 0, (float)d2, drawFormat);
-
-            user_Graphics.DrawString((-Znach_y * 0.5).ToString(), axFont, axBrush, 0, (float)d4, drawFormat);
-
-            user_Graphics.DrawString((-Znach_y).ToString(), axFont, axBrush, 0, (float)d3, drawFormat);
-
-            user_Graphics.DrawString((-Znach_y).ToString(), axFont, axBrush, 0, (float)d3, drawFormat);
+            user_Graphics.DrawString(Znach_y.ToString(), axFont, axBrush, -5, 5, drawFormat);
+            user_Graphics.DrawString((Znach_y / 2).ToString(), axFont, axBrush, -5, (pictureBox1.Height - 15) * (float)0.25, drawFormat);
+            user_Graphics.DrawString(0.ToString(), axFont, axBrush, 0, pictureBox1.Height / 2 - 5, drawFormat);
+            user_Graphics.DrawString((-Znach_y / 2).ToString(), axFont, axBrush, -5, (pictureBox1.Height - 15) * (float)0.75, drawFormat);
+            user_Graphics.DrawString((-Znach_y).ToString(), axFont, axBrush, -5, pictureBox1.Height - 15, drawFormat);
 
             pictureBox1.Image = canvas;
+        }
+
+        void Axis_1()
+        {
+
+            user_gr1.Clear(Color.White);
+
+            user_gr1.DrawLine(pen_ax, (float)x0_, (float)y0_, pictureBox2.Width, (float)y0_);
+            user_gr1.DrawLine(pen_ax, (float)x0_, 0, (float)x0_, pictureBox2.Height);
+
+            user_gr1.DrawString("0", axFont, axBrush, 0, (float)y0_, drawFormat);
+
+            user_gr1.DrawLine(pen_ax, (float)x0_, 5, pictureBox2.Width, 5);
+            user_gr1.DrawLine(pen_ax, (float)x0_, (float)y0_ - pictureBox2.Height / 4, pictureBox2.Width, (float)y0_ - pictureBox2.Height / 4);
+            user_gr1.DrawLine(pen_ax, (float)x0_, (float)y0_ + pictureBox2.Height / 4, pictureBox2.Width, (float)y0_ + pictureBox2.Height / 4);
+            user_gr1.DrawLine(pen_ax, (float)x0_, pictureBox2.Height - 5, pictureBox2.Width, pictureBox2.Height - 5);
+
+            user_gr1.DrawLine(pen_ax, pictureBox2.Width * (float)0.25, (float)y0_ - 3, pictureBox2.Width * (float)0.25, (float)y0_ + 3);
+            user_gr1.DrawLine(pen_ax, pictureBox2.Width * (float)0.5, (float)y0_ - 3, pictureBox2.Width * (float)0.5, (float)y0_ + 3);
+            user_gr1.DrawLine(pen_ax, pictureBox2.Width * (float)0.75, (float)y0_ - 3, pictureBox2.Width * (float)0.75, (float)y0_ + 3);
+            user_gr1.DrawLine(pen_ax, pictureBox2.Width - 5, (float)y0_ - 3, pictureBox2.Width - 5, (float)y0_ + 3);
+
+            pictureBox2.Image = canvas1;
+
+        }
+
+        void Divisions_1(List<PointF> p, float c) {
+            double Znach_x=0, Znach_y=0;
+
+            for (int i = 0; i < p.Count(); i++) {
+                if (p[i].X > Znach_x)
+                    Znach_x = p[i].X;
+                if (p[i].Y > Znach_y)
+                    Znach_y = p[i].Y;
+            }
+
+            Znach_y *= c;
+
+            Znach_y = Math.Round(Znach_y * 100) / 100;
+
+            Znach_x = Math.Round(Znach_x * 1000) / 1000;
+
+            user_gr1.DrawString(Znach_y.ToString(), axFont, axBrush, -3, 5, drawFormat);
+            user_gr1.DrawString((Znach_y / 2).ToString(), axFont, axBrush, -3, (pictureBox2.Height - 15) * (float)0.25, drawFormat);
+
+            user_gr1.DrawString((-Znach_y / 2).ToString(), axFont, axBrush, -3, (pictureBox2.Height - 15) * (float)0.75, drawFormat);
+            user_gr1.DrawString((-Znach_y).ToString(), axFont, axBrush, -3, pictureBox2.Height - 15, drawFormat);
+
+            user_gr1.DrawString(Znach_x.ToString(), axFont, axBrush,  pictureBox2.Width - 15, (float)y0_ + 5, drawFormat);
+            user_gr1.DrawString((Znach_x * 0.75).ToString(), axFont, axBrush,  (pictureBox2.Width) * (float)0.75, (float)y0_ + 5, drawFormat);
+
+            user_gr1.DrawString((Znach_x * 0.5).ToString(), axFont, axBrush,  pictureBox2.Width  * (float)0.5, (float)y0_ + 5, drawFormat);
+            user_gr1.DrawString((Znach_x * 0.25).ToString(), axFont, axBrush, (pictureBox2.Width) * (float)0.25, (float)y0_ + 5, drawFormat);
+
+            pictureBox2.Image = canvas1;
+        }
+
+        void Divisions_2(List<PointF> p)
+        {
+            double Znach_x = 0, Znach_y = 0;
+
+            for (int i = 0; i < p.Count(); i++)
+            {
+                if (p[i].X > Znach_x)
+                    Znach_x = p[i].X;
+                if (p[i].Y > Znach_y)
+                    Znach_y = p[i].Y;
+            }
+
+            Znach_y = Math.Round(Znach_y * 100000) / 100000;
+
+            Znach_x = Math.Round(Znach_x * 10000) / 10000;
+
+            user_gr1.DrawString(Znach_y.ToString(), axFont, axBrush, -3, 5, drawFormat);
+            user_gr1.DrawString((Znach_y / 2).ToString(), axFont, axBrush, -3, (pictureBox2.Height - 15) * (float)0.25, drawFormat);
+
+            user_gr1.DrawString((-Znach_y / 2).ToString(), axFont, axBrush, -3, (pictureBox2.Height - 15) * (float)0.75, drawFormat);
+            user_gr1.DrawString((-Znach_y).ToString(), axFont, axBrush, -3, pictureBox2.Height - 15, drawFormat);
+
+            user_gr1.DrawString(Znach_x.ToString(), axFont, axBrush, pictureBox2.Width - 15, (float)y0_ + 5, drawFormat);
+            user_gr1.DrawString((Znach_x * 0.75).ToString(), axFont, axBrush, (pictureBox2.Width) * (float)0.75, (float)y0_ + 5, drawFormat);
+
+            user_gr1.DrawString((Znach_x * 0.5).ToString(), axFont, axBrush, pictureBox2.Width * (float)0.5, (float)y0_ + 5, drawFormat);
+            user_gr1.DrawString((Znach_x * 0.25).ToString(), axFont, axBrush, (pictureBox2.Width) * (float)0.25, (float)y0_ + 5, drawFormat);
+
+            pictureBox2.Image = canvas1;
         }
 
 
         private void Change_dx(object sender, EventArgs e)
         {
             dx = trackBar1.Value - 100;
+            Draw();
+        }
+
+        private void Change_dx1(object sender, EventArgs e)
+        {
+            dx1 = trackBar2.Value - 100;
             Draw();
         }
 
@@ -223,18 +285,10 @@ namespace WindowsFormsApp2
             }
         }
 
-        private void Change_dx1(object sender, EventArgs e)
-        {
-            dx1 = trackBar2.Value - 100;
-            Draw();
-        }
-
         private void Strip_Exit_Click(object sender, EventArgs e)
         {
             Close();
         }
-
-
 
         private void LoadImpulse() {
             Points = 2;
@@ -262,13 +316,17 @@ namespace WindowsFormsApp2
 
                 Points++;
             }
-            Coef_Imp = -(pictureBox1.Height - 50) / (Math.Round(LoadingImp.Min() * 10000) / 5000);
+
+            Time_Div = Time.Max();
+            Imp_Div = Math.Max(Math.Max(LoadingImp.Max(), -LoadingImp.Min()), Math.Max(-ReflectedImp.Min(), ReflectedImp.Max()));
+
+            Imp_Coef = -(pictureBox1.Height - 50) / (Math.Round(LoadingImp.Min() * 10000) / 5000);
             Time_Coef =  (pictureBox1.Width - 20) / Time.Max();
         }
 
 
 
-        private PointF GetPoint(float x, float y) => new PointF((float)(x0 + x * Time_Coef), (float)(y0 - y * Coef_Imp));
+        private PointF GetPoint(float x, float y) => new PointF((float)(x0 + x * Time_Coef), (float)(y0 - y * Imp_Coef));
 
         private PointF GetPoint_1(float x, float y) => new PointF((float)(x0_ + x * new_Time_coef), (float)(y0_ - y * new_Imp_coef));
 
@@ -300,6 +358,8 @@ namespace WindowsFormsApp2
                 user_Graphics.DrawLine(pen1, p2[i - 1], p2.Last());
             }
 
+            Kolski_Check();
+
             pictureBox1.Image = canvas;
         }
 
@@ -307,14 +367,15 @@ namespace WindowsFormsApp2
             float[,] transformedPoints1 = CreateTransformedPoints1();
             float[,] transformedPoints2 = CreateTransformedPoints2();
 
+            float temp_1;
+            double Check_Value = 0;
+            int count, index;
+
             List<PointF> temp1 = new List<PointF>();
             List<PointF> temp2 = new List<PointF>();
 
             List<PointF> op = new List<PointF>();
-
-            double Check_Value = 0;
-
-            float Deform_max = 0;
+            float Strain_max = 0;
             float Time_max = 0;
 
             int i, j;
@@ -323,94 +384,55 @@ namespace WindowsFormsApp2
             {
                 if (transformedPoints1[0, i] >= x0)
                 {
-                    temp1.Add(GetF(transformedPoints1[0, i], transformedPoints1[1, i]));
+                    temp_1 = transformedPoints1[1, i];
+                    
+                    temp1.Add(GetF(transformedPoints1[0, i], temp_1));
                     if (transformedPoints1[0, i] > Time_max)
                         Time_max = transformedPoints1[0, i];
-                    if (transformedPoints1[1, i] > Deform_max)
-                        Deform_max = transformedPoints1[1, i];
+                    if (temp_1 > Strain_max)
+                        Strain_max = transformedPoints1[1, i];
                 }
 
                 if (transformedPoints2[0, i] >= x0)
                     temp2.Add(GetF(transformedPoints2[0, i], transformedPoints2[1, i]));
+                
             }
 
-            new_Imp_coef = (float)((pictureBox2.Height - 30) / Deform_max) / 500000;
-            new_Time_coef = (float)((pictureBox2.Width - 10) / Time_max);
+            new_Imp_coef = (float)((pictureBox2.Height - 30) / Strain_max) / 600000; 
+            new_Time_coef = (pictureBox2.Width - 30) / Time_max;
 
             Stress = new List<PointF>(temp1);
-            Strain = new List<PointF>(temp2);
+            Strain_Rate = new List<PointF>();
+            Strain = new List<PointF>();
+
+            index = Time.IndexOf(temp2[0].X - 30);
+
+            Check_Value += Math.Pow(-temp2[0].Y + temp1[0].Y - LoadingImp[index], 2);
+
+            Strain_Rate.Add(GetF(temp2[0].X, -temp2[0].Y + temp1[0].Y));
 
             op.Add(GetPoint(temp2[0].X, -temp2[0].Y + temp1[0].Y));
 
-            for (j = 1; j < Math.Min(temp1.Count(), temp2.Count()); j++)
+            count = Math.Min(temp1.Count(), temp2.Count());
+
+            for (j = 1; j < count; j++)
             {
-                Check_Value = Math.Pow(Math.Abs(op.Last().Y - LoadingImp[j]), 2);
+                Strain_Rate.Add(GetF(temp2[j].X, -temp2[j].Y + temp1[j].Y));
 
                 op.Add(GetPoint(temp2[j].X, -temp2[j].Y + temp1[j].Y));
 
-                user_Graphics.DrawLine(pen3, op[j - 1], op.Last());
-            }
-            Check_Value = Check_Value / j;
-            Check_Value = Math.Sqrt(Check_Value);
-            Kolski_Check_Value.Text = Check_Value.ToString();
-
-            pictureBox1.Image = canvas;
-        }
-        private void Kolski_Check_Click(object sender, EventArgs e)
-        {
-            float[,] transformedPoints1 = CreateTransformedPoints1();
-            float[,] transformedPoints2 = CreateTransformedPoints2();
-
-            List<PointF> temp1 = new List<PointF>();
-            List<PointF> temp2 = new List<PointF>();
-
-            double Check_Value = 0;
-
-            List<PointF> op = new List<PointF>();
-
-            float Deform_max = 0;
-            float Time_max = 0;
-
-            int i, j = 0;
-
-            for (i = 0; i < Time.Count(); i++)
-            {
-                if (transformedPoints1[0, i] >= x0)
-                {
-                    temp1.Add(GetF(transformedPoints1[0, i], transformedPoints1[1, i]));
-                    if (transformedPoints1[0, i] > Time_max)
-                        Time_max = transformedPoints1[0, i];
-                    if (transformedPoints1[1, i] > Deform_max)
-                        Deform_max = transformedPoints1[1, i];
-                }
-
-                if (transformedPoints2[0, i] >= x0)
-                    temp2.Add(GetF(transformedPoints2[0, i], transformedPoints2[1, i]));
-            }
-
-            new_Imp_coef = (float)((pictureBox2.Height - 30) / Deform_max)/500000;
-            new_Time_coef = (float)((pictureBox2.Width - 10) / Time_max);
-
-            Stress = new List<PointF>(temp1);
-            Strain = new List<PointF>(temp2);
-
-            op.Add(GetPoint(temp2[0].X, -temp2[0].Y + temp1[0].Y));
-
-            for (j = 1; j < Math.Min(temp1.Count(), temp2.Count()); j++) {
-                Check_Value = Math.Pow(Math.Abs(op.Last().Y - LoadingImp[j]), 2);
-
-                op.Add(GetPoint(temp2[j].X, -temp2[j].Y + temp1[j].Y));
+                if (index + j < Time.Count())
+                    Check_Value += Math.Pow(-temp2[j].Y + temp1[j].Y - LoadingImp[index + j], 2);
 
                 user_Graphics.DrawLine(pen3, op[j - 1], op.Last());
             }
 
-            Check_Value = Check_Value / j;
+            Check_Value /= count;
             Check_Value = Math.Sqrt(Check_Value);
-            Kolski_Check_Value.Text = Check_Value.ToString();
+            Middle_Sq_Value.Text = Check_Value.ToString();
 
             pictureBox1.Image = canvas;
         }
-
 
         float Integral(int index, List<PointF> op)
         {
@@ -418,7 +440,7 @@ namespace WindowsFormsApp2
             int k;
 
             for (k = 1; k < index; k++) {
-                temp += (float)((op[k-1].Y + op[k].Y) * Time[k] / 2);
+                temp += (float)((op[k-1].Y + op[k].Y) * (op[k].X - op[k-1].X) / 2);
             }
 
             return temp;
@@ -426,57 +448,49 @@ namespace WindowsFormsApp2
 
         private void Strain_Draw_Click(object sender, EventArgs e)
         {
-            List<PointF> op = new List<PointF>();
-
-            user_gr1.FillRectangle(Brushes.White, 0, 0, pictureBox2.Width, pictureBox2.Height);
-
-            user_gr1.DrawLine(pen_ax, (float)x0_, (float)y0_, pictureBox2.Width, (float)y0_);
-            user_gr1.DrawLine(pen_ax, (float)x0_, 0, (float)x0_, pictureBox2.Height);
+            Axis_1();
 
             user_gr1.DrawString("Strain", StrFont, axBrush, pictureBox2.Width / 2 - 12, 6, drawFormat);
-            user_gr1.DrawString("0", axFont, axBrush, 0, (float)y0_, drawFormat);
+            user_gr1.DrawString("Время, мкс", axFont, axBrush, pictureBox2.Width / 2 - 12, pictureBox2.Height - 13, drawFormat);
 
-            double C = 50, L0 = 10.22; //c = 5050
+            Strain.Add(GetPoint_1(Strain_Rate[0].X,  Integral(0, Strain_Rate) * 2000));
 
-            double coef = -2 * C / L0;
-
-            op.Add(GetPoint_1(Strain[0].X, (float)coef * Integral(0, Strain)));
-
-            for (int i = 1; i < Strain.Count(); i++)
+            for (int i = 1; i < Strain_Rate.Count(); i++)
             {
-                op.Add(GetPoint_1(Strain[i].X, (float)coef * Integral(i, Strain)));
+                Strain.Add(GetPoint_1(Strain_Rate[i].X,  Integral(i, Strain_Rate) * 2000));
 
-                user_gr1.DrawLine(pen1, op[i - 1], op.Last());
+                user_gr1.DrawLine(pen1, Strain[i - 1], Strain.Last());
             }
+
+            Divisions_1(Strain, 1);
 
             pictureBox2.Image = canvas1;
         }
 
         private void Strain_Rate_Draw_Click(object sender, EventArgs e)
         {
+            Axis_1();
+
             List<PointF> op = new List<PointF>();
 
-            user_gr1.FillRectangle(Brushes.White, 0, 0, pictureBox2.Width, pictureBox2.Height);
-
-            user_gr1.DrawLine(pen_ax, (float)x0_, (float)y0_, pictureBox2.Width, (float)y0_);
-            user_gr1.DrawLine(pen_ax, (float)x0_, 0, (float)x0_, pictureBox2.Height);
-
             user_gr1.DrawString("Strain Rate", StrFont, axBrush, pictureBox2.Width / 2 - 12, 6, drawFormat);
-            user_gr1.DrawString("0", axFont, axBrush, 0, (float)y0_, drawFormat);
+            user_gr1.DrawString("Время, мкс", axFont, axBrush, pictureBox2.Width / 2 - 12, pictureBox2.Height - 13, drawFormat);
+
 
             double C = 5050, L0 = 10.22;
 
-            double coef = -2 * C / L0;
+            float coef = (float)(-2 * C / L0);
 
-            op.Add(GetPoint_1(Strain[0].X, (float)coef * Strain[0].Y));
+            op.Add(GetPoint_1(Strain_Rate[0].X, (float)coef * Strain_Rate[0].Y * 200));
 
-            for (int i = 1; i < Strain.Count(); i++)
+            for (int i = 1; i < Strain_Rate.Count(); i++)
             {
-                op.Add(GetPoint_1(Strain[i].X, (float)coef * Strain[i].Y));
+                op.Add(GetPoint_1(Strain_Rate[i].X, (float)coef * Strain_Rate[i].Y * 200));
 
                 user_gr1.DrawLine(pen1, op[i - 1], op.Last());
             }
 
+            Divisions_1(Strain_Rate, -coef);
 
             pictureBox2.Image = canvas1;
 
@@ -486,31 +500,61 @@ namespace WindowsFormsApp2
         {
             List<PointF> op = new List<PointF>();
 
-            user_gr1.FillRectangle(Brushes.White, 0, 0, pictureBox2.Width, pictureBox2.Height);
-
-            user_gr1.DrawLine(pen_ax, (float)x0_, (float)y0_, pictureBox2.Width, (float)y0_);
-            user_gr1.DrawLine(pen_ax, (float)x0_, 0, (float)x0_, pictureBox2.Height);
+            Axis_1();
 
             user_gr1.DrawString("Stress", StrFont, axBrush, pictureBox2.Width / 2 - 12, 6, drawFormat);
-            user_gr1.DrawString("0", axFont, axBrush, 0, (float)y0_, drawFormat);
+            user_gr1.DrawString("Время, мкс", axFont, axBrush, pictureBox2.Width / 2 - 12, pictureBox2.Height - 13, drawFormat);
 
             double E = 71000, D = 20, D0 = 18.45;
             double A = Math.PI * Math.PI * D * 0.5;
             double A0 = Math.PI * Math.PI * D0 * 0.5;
 
-            double coef = E * A / A0;
+            float coef = (float)(E * A / A0);
 
-            op.Add(GetPoint_1(Stress[0].X, (float)coef * Stress[0].Y));
+            op.Add(GetPoint_1(Stress[0].X, 3 * (float)coef * Stress[0].Y));
 
             for (int i = 1; i < Stress.Count(); i++)
             {
-                op.Add(GetPoint_1(Stress[i].X, (float)coef * Stress[i].Y));
+                op.Add(GetPoint_1(Stress[i].X, 3 * (float)coef * Stress[i].Y));
 
                 user_gr1.DrawLine(pen2, op[i - 1], op.Last());
             }
 
+            Divisions_1(Stress, coef);
 
             pictureBox2.Image = canvas1;
+        }
+
+        private PointF GetPoint_2(float x, float y) => new PointF((float)(x0_ + x * Imp_Coef_1), (float)(y0_ - y * Imp_Coef_2*10000));
+
+        private void Stress_Strain_Btn_Click(object sender, EventArgs e)
+        {
+
+            List<PointF> op = new List<PointF>();
+
+            int index = Math.Min(Stress.Count(), Strain.Count());
+
+            Axis_1();
+
+            user_gr1.DrawString("Strain ~ Stress", StrFont, axBrush, pictureBox2.Width / 2 - 12, 6, drawFormat);
+            user_gr1.DrawString("0", axFont, axBrush, 0, (float)y0_, drawFormat);
+            user_gr1.DrawString("Strain", axFont, axBrush, pictureBox2.Width - 35, pictureBox2.Height / 2,  drawFormat);
+            user_gr1.DrawString("Stress", axFont, axBrush, 6, 6, drawFormat);
+
+
+            Imp_Coef_1 = Imp_Coef_2 = 1;
+
+            op.Add(GetPoint_2(Imp_Coef_1 * Strain[0].Y, Imp_Coef_1 * Stress[0].Y / (float)1.1));
+
+            for (int i = 1; i < index; i++)
+            {
+                op.Add(GetPoint_2(Imp_Coef_1 * Strain[i].Y , Imp_Coef_1 * Stress[i].Y / (float)1.1));
+
+                user_gr1.DrawLine(pen2, op[i - 1], op.Last());
+            }
+
+            pictureBox2.Image = canvas1;
+
         }
 
     }
